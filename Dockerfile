@@ -47,5 +47,9 @@ RUN apt-get update && apt-get install -y \
 # Copy the build scripts.
 COPY build.sh download.pl env.source fetchurl /ffmpeg-static/
 
-VOLUME /ffmpeg-static
-CMD cd /ffmpeg-static; /bin/bash
+ARG BUILD_ARGS=""
+RUN cd /ffmpeg-static; ./build.sh $BUILD_ARGS
+
+FROM scratch
+COPY --from=0 /ffmpeg-static/bin/ffmpeg /ffmpeg
+ENTRYPOINT ["/ffmpeg"]
